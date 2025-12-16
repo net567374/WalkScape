@@ -7,7 +7,7 @@
 
 ## 🌱 Overview
 
-WalkScape is a revolutionary gamified fitness application built on the CrossFI blockchain that encourages users to "touch grass" and maintain healthy outdoor activities. By combining blockchain technology, artificial intelligence, and fitness gamification, users can earn rewards, collect pets, discover artifacts, and build communities while staying active. AI powers smarter location validation, personalized recommendations, and unique pet evolution for every user.
+WalkScape is a revolutionary gamified fitness application built on the Lisk blockchain that encourages users to "touch grass" and maintain healthy outdoor activities. By combining blockchain technology, artificial intelligence, and fitness gamification, users can earn rewards, collect pets, discover artifacts, and build communities while staying active. AI powers smarter location validation, personalized recommendations, and unique pet evolution for every user.
 
 
 ## ✨ Key Features
