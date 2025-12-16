@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useWallet } from '@/contexts/WalletContext';
 import { getContract, bytes32ToString } from '@/lib/web3';
+import { trackTransaction } from '@/lib/divvi';
 import {
     Users,
     Plus,
@@ -189,6 +190,10 @@ export default function Colony() {
             const tx = await (contractWithSigner as unknown as { createColony: (name: string) => Promise<{ hash: string; wait: () => Promise<unknown> }> }).createColony(newColonyName.trim());
             await tx.wait();
 
+            // Track transaction with Divvi for referral rewards
+            const network = await provider.getNetwork();
+            await trackTransaction(tx.hash, Number(network.chainId));
+
             setTimeout(async () => {
                 await refreshPlayerStats();
                 await loadColonyData();
@@ -231,6 +236,10 @@ export default function Colony() {
             const tx = await (contractWithSigner as unknown as { joinColony: (colonyId: bigint) => Promise<{ hash: string; wait: () => Promise<unknown> }> }).joinColony(BigInt(targetColonyId));
             await tx.wait();
 
+            // Track transaction with Divvi for referral rewards
+            const network = await provider.getNetwork();
+            await trackTransaction(tx.hash, Number(network.chainId));
+
             setTimeout(() => {
                 refreshPlayerStats();
                 loadColonyData();
@@ -269,6 +278,10 @@ export default function Colony() {
 
             const tx = await (contractWithSigner as unknown as { leaveColony: () => Promise<{ hash: string; wait: () => Promise<unknown> }> }).leaveColony();
             await tx.wait();
+
+            // Track transaction with Divvi for referral rewards
+            const network = await provider.getNetwork();
+            await trackTransaction(tx.hash, Number(network.chainId));
 
             setTimeout(() => {
                 refreshPlayerStats();

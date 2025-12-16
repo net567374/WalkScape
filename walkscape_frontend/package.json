@@ -13,6 +13,7 @@
     "@capacitor/camera": "^7.0.1",
     "@capacitor/core": "^7.4.0",
     "@capacitor/geolocation": "^7.1.2",
+    "@divvi/referral-sdk": "^2.3.0",
     "@google/generative-ai": "^0.24.1",
     "@privy-io/react-auth": "^2.21.1",
     "browser-image-compression": "^2.0.2",

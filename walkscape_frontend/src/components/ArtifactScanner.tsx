@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useWallet } from '@/contexts/WalletContext';
 import { getContract, ArtifactType } from '@/lib/web3';
+import { trackTransaction } from '@/lib/divvi';
 import Webcam from 'react-webcam';
 import Image from 'next/image';
 import {
@@ -302,6 +303,10 @@ export default function ArtifactScanner() {
             const receipt = await tx.wait();
             console.log('Transaction confirmed:', receipt);
 
+            // Track transaction with Divvi for referral rewards
+            const network = await provider.getNetwork();
+            await trackTransaction(tx.hash, Number(network.chainId));
+
             setScanResult({
                 success: true,
                 message: `Grass touched successfully! +15 XP earned. Transaction: ${tx.hash.slice(0, 10)}...`
@@ -374,6 +379,10 @@ export default function ArtifactScanner() {
             console.log('⏳ Waiting for transaction confirmation...');
             const receipt = await tx.wait();
             console.log('Transaction confirmed:', receipt);
+
+            // Track transaction with Divvi for referral rewards
+            const network = await provider.getNetwork();
+            await trackTransaction(tx.hash, Number(network.chainId));
 
             const artifactNames = ['Mushroom', 'Fossil', 'Graffiti', 'Pixel Plant'];
             setScanResult({

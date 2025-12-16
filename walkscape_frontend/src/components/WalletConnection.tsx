@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useWallet } from '@/contexts/WalletContext';
 import { getContract } from '@/lib/web3';
+import { trackTransaction } from '@/lib/divvi';
 import {
     Wallet,
     Loader2,
@@ -73,6 +74,10 @@ export default function WalletConnection({ showRegistration = false }: WalletCon
             // Wait for transaction confirmation
             const receipt = await tx.wait();
             console.log('Transaction confirmed:', receipt);
+
+            // Track transaction with Divvi for referral rewards
+            const network = await provider.getNetwork();
+            await trackTransaction(tx.hash, Number(network.chainId));
 
             if (receipt.status === 1) {
                 setRegistrationResult({

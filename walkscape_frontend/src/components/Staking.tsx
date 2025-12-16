@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useWallet } from '@/contexts/WalletContext';
 import { getContract } from '@/lib/web3';
+import { trackTransaction } from '@/lib/divvi';
 import {
     TrendingUp,
     Coins,
@@ -75,15 +76,19 @@ export default function Staking() {
             const signer = await provider.getSigner();
             const contract = getContract(provider);
             const contractWithSigner = contract.connect(signer);
-            await (contractWithSigner as unknown as {
-                stakeTokens(amount: bigint): Promise<void>;
+            const tx = await (contractWithSigner as unknown as {
+                stakeTokens(amount: bigint): Promise<{ hash: string; wait: () => Promise<void> }>;
             }).stakeTokens(BigInt(stakeAmount));
 
-            setTimeout(() => {
-                loadStakeInfo();
-                setIsStaking(false);
-                setStakeAmount('');
-            }, 3000);
+            await tx.wait();
+
+            // Track transaction with Divvi for referral rewards
+            const network = await provider.getNetwork();
+            await trackTransaction(tx.hash, Number(network.chainId));
+
+            loadStakeInfo();
+            setIsStaking(false);
+            setStakeAmount('');
         } catch (error) {
             console.error('Failed to stake:', error);
             setIsStaking(false);
@@ -98,16 +103,19 @@ export default function Staking() {
             const signer = await provider.getSigner();
             const contract = getContract(provider);
             const contractWithSigner = contract.connect(signer);
-            const rewardPetId = await (contractWithSigner as unknown as {
-                harvestRewards(): Promise<number | string | bigint>;
+            const tx = await (contractWithSigner as unknown as {
+                harvestRewards(): Promise<{ hash: string; wait: () => Promise<void> }>;
             }).harvestRewards();
 
-            setTimeout(() => {
-                loadStakeInfo();
-                refreshPlayerStats();
-                setIsHarvesting(false);
-                alert("Harvested! New pet ID: " + rewardPetId);
-            }, 3000);
+            await tx.wait();
+
+            // Track transaction with Divvi for referral rewards
+            const network = await provider.getNetwork();
+            await trackTransaction(tx.hash, Number(network.chainId));
+
+            loadStakeInfo();
+            refreshPlayerStats();
+            setIsHarvesting(false);
         } catch (error) {
             console.error('Failed to harvest:', error);
             setIsHarvesting(false);

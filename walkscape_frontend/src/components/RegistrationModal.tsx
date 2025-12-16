@@ -4,6 +4,7 @@
 import { useState, useEffect } from 'react';
 import { useWallet } from '@/contexts/WalletContext';
 import { getContract } from '@/lib/web3';
+import { trackTransaction } from '@/lib/divvi';
 import {
     X,
     User,
@@ -61,6 +62,10 @@ export default function RegistrationModal({ isOpen, onClose }: RegistrationModal
             const tx = await contractTyped.registerPlayer();
 
             await tx.wait();
+
+            // Track transaction with Divvi for referral rewards
+            const network = await provider.getNetwork();
+            await trackTransaction(tx.hash, Number(network.chainId));
 
             setRegistrationResult({
                 success: true,
